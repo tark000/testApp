@@ -1,0 +1,49 @@
+<div class="slider-block">
+    <carousel interval="myInterval">
+        <slide ng-repeat="image in images" active="image.active">
+            <img ng-src="{{image.data}}" style="margin:auto;">
+            <div class="carousel-caption">
+                <rating ng-model="image.rate" max="5" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+                <h4>Slide {{$index}}</h4>
+                <p>impressionCount = {{image.impressionCount}}</p>
+            </div>
+        </slide>
+    </carousel>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-4 col-md-4">
+        <input class="btn btn-primary" type="file" ng-file-select="onFileSelect($files)" multiple accept="image/*">
+
+        <div class="images-list">
+            <div class="image-list" ng-repeat="image in images track by $index">
+                {{image.file.name}}
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="col-xs-12 col-sm-8 col-md-8">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Image Id</th>
+                    <th>Image URL</th>
+                    <th>Impression count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="image in images track by $index">
+                    <th>{{image.id}}</th>
+                    <th>{{image.file.name}}</th>
+                    <th>{{image.impressionCount}}</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+

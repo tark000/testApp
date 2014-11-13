@@ -1,0 +1,46 @@
+header {
+    height:70px;
+    background:#F0F0F0;
+    padding-left: 10px;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+}
+.main-content{
+    padding-top: 70px;
+}
+
+.carousel-inner > .item > img, .carousel-inner > .item > a > img{
+    max-height: 200px;
+}
+
+.images-list{
+    border: 2px solid #222222;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+.image-list{
+    border-bottom: 2px solid #222222;
+    height: 25px;
+    line-height: 25px;
+    padding-left: 10px;
+}
+.image-list:last-child{
+    border-bottom: none;
+}
+
+.slider-block{
+    margin: 20px 0;
+}
+
+.table-striped{
+    border: 2px solid #222222;
+}
+
+.carousel-control{
+    cursor: pointer;
+}
+
+input[type="file"]{
+    max-width: 100%;
+}
