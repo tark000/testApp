@@ -22,7 +22,7 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
 
         });
     };
-    for (var i=0; i<4; i++) {
+    for (var i=0; i<5; i++) {
         $scope.addSlide(i);
     }
 
@@ -31,8 +31,12 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
     //add file to slides list
     $scope.selectedFiles = [];
     var imgCount;
+    var oldSize;
     $scope.onFileSelect = function($files) {
+        var newImages = [];
         imgCount = 0;
+        oldSize = $scope.images.length;
+        var nameArray = [];
         angular.forEach($files, function(v) {
 
                 $scope.selectedFiles.push(v);
@@ -42,18 +46,25 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
 
         for ( var i = 0; i < $scope.selectedFiles.length; i++) {
             var $file = $scope.selectedFiles[i];
+
             if (window.FileReader && $file.type.indexOf('image') > -1) {
                 var fileReader = new FileReader();
+
+                nameArray.push($file.name);
                 fileReader.readAsDataURL($scope.selectedFiles[i]);
                 var loadFile = function(fileReader, index) {
                     fileReader.onload = function(e) {
+
+                        $scope.images.push({id : $scope.images[$scope.images.length-1].id + 1, data:e.target.result, file : {name: nameArray[imgCount]}, impressionCount:0, rate: 0});
+                        newImages.push({id : $scope.images[$scope.images.length-1].id + 1, data:e.target.result, file : {name: nameArray[imgCount]}, impressionCount:0, rate: 0});
+                        imgCount ++;
+                        console.log("i = ",i)
+                        if (i == imgCount){
+
+                            createArray(oldSize);
+                        }
                         $timeout(function() {
-                            $scope.images.push({id : $scope.images[$scope.images.length-1].id + 1, data:e.target.result, file : $file, impressionCount:0, rate: 0});
-                            imgCount ++;
-                            console.log("i = ",i)
-                            if (i == imgCount){
-                                createArray();
-                            }
+
 
                         });
                     }
@@ -74,9 +85,7 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
 
         for (var i = 0; i < $scope.groupedSlides.length; i++) {
 
-
             if ($scope.groupedSlides[i].active && lastId != i) {
-                console.log("id",i)
 
                 angular.forEach($scope.groupedSlides[i], function(image) {
 
@@ -87,6 +96,7 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
                 lastId = i;
             }
         }
+
     }, function (currentSlide, previousSlide) {
         if (currentSlide !== previousSlide) {
             console.log('currentSlide:', currentSlide);
@@ -101,22 +111,85 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
 
 
     // create multiple images in one slider
-    function createArray (){
+    $scope.groupedSlides = [];
+    var lastSlidePosition;
+    function createArray (size){
+        console.log(size);
+        var i, a,col = [], b=[];
 
-        var i, a = [], b=[];
 
-        for (i = 0; i < $scope.images.length; i += 3) {
-            b = [];
-            b.push($scope.images[i]);
-            if ($scope.images[i + 1]){
-                b.push($scope.images[i + 1]);
+
+        if (size){
+            if (lastSlidePosition == 1){
+                $scope.groupedSlides[$scope.groupedSlides.length -1].push($scope.images[size],$scope.images[size + 1]);
+                col = size + 2
+                for (i = 0; i < $scope.images.length - size; i += 3) {
+                    b = [];
+
+                    b.push($scope.images[col + i]);
+                    lastSlidePosition = 1;
+                    if ($scope.images[col +  i + 1]){
+                        b.push($scope.images[col +  i + 1]);
+                        lastSlidePosition = 2;
+                    }
+                    if ($scope.images[col +  i + 2]){
+                        b.push($scope.images[col +  i + 2]);
+                        lastSlidePosition = 3;
+                    }
+
+                    $scope.groupedSlides.push(b);
+                }
+
             }
-            if ($scope.images[i + 2]){
-                b.push($scope.images[i + 2]);
+            if (lastSlidePosition == 2){
+                $scope.groupedSlides[$scope.groupedSlides.length -1].push($scope.images[size]);
+                col = size + 1
+                for (i = 0; i < $scope.images.length - size; i += 3) {
+                    b = [];
+
+                    b.push($scope.images[col + i]);
+                    lastSlidePosition = 1;
+                    if ($scope.images[col +  i + 1]){
+                        b.push($scope.images[col +  i + 1]);
+                        lastSlidePosition = 2;
+                    }
+                    if ($scope.images[col +  i + 2]){
+                        b.push($scope.images[col +  i + 2]);
+                        lastSlidePosition = 3;
+                    }
+
+                    $scope.groupedSlides.push(b);
+                }
+
             }
-            a.push(b);
+
+
+
+        } else{
+            for (i = 0; i < $scope.images.length; i += 3) {
+                b = [];
+
+                b.push($scope.images[i]);
+                lastSlidePosition = 1;
+                if ($scope.images[i + 1]){
+                    b.push($scope.images[i + 1]);
+                    lastSlidePosition = 2;
+                }
+                if ($scope.images[i + 2]){
+                    b.push($scope.images[i + 2]);
+                    lastSlidePosition = 3;
+                }
+
+                $scope.groupedSlides.push(b);
+            }
         }
-        $scope.groupedSlides = a;
+
+
+
+
+
+
+
     }
 
     createArray();
