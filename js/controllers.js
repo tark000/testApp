@@ -30,12 +30,12 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
 
     //add file to slides list
     $scope.selectedFiles = [];
-
+    var imgCount;
     $scope.onFileSelect = function($files) {
-
+        imgCount = 0;
         angular.forEach($files, function(v) {
 
-            $scope.selectedFiles.push(v);
+                $scope.selectedFiles.push(v);
 
         });
 
@@ -48,12 +48,20 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
                 var loadFile = function(fileReader, index) {
                     fileReader.onload = function(e) {
                         $timeout(function() {
-                            $scope.images.push({id : index, data:e.target.result, file : $file, impressionCount:0, rate: 0});
+                            $scope.images.push({id : $scope.images[$scope.images.length-1].id + 1, data:e.target.result, file : $file, impressionCount:0, rate: 0});
+                            imgCount ++;
+                            console.log("i = ",i)
+                            if (i == imgCount){
+                                createArray();
+                            }
+
                         });
                     }
                 }(fileReader, i);
+
             }
         }
+
 
     };
 
@@ -63,11 +71,20 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
 
     var lastId;
     $scope.$watch(function () {
-        for (var i = 0; i < $scope.images.length; i++) {
-            if ($scope.images[i].active && lastId != $scope.images[i].id) {
-                console.log("id",$scope.images[i].id)
-                $scope.images[i].impressionCount ++;
-                lastId = $scope.images[i].id;
+
+        for (var i = 0; i < $scope.groupedSlides.length; i++) {
+
+
+            if ($scope.groupedSlides[i].active && lastId != i) {
+                console.log("id",i)
+
+                angular.forEach($scope.groupedSlides[i], function(image) {
+
+                    image.impressionCount ++;
+
+                });
+
+                lastId = i;
             }
         }
     }, function (currentSlide, previousSlide) {
@@ -75,6 +92,34 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
             console.log('currentSlide:', currentSlide);
         }
     });
+
+
+
+
+
+
+
+
+    // create multiple images in one slider
+    function createArray (){
+
+        var i, a = [], b=[];
+
+        for (i = 0; i < $scope.images.length; i += 3) {
+            b = [];
+            b.push($scope.images[i]);
+            if ($scope.images[i + 1]){
+                b.push($scope.images[i + 1]);
+            }
+            if ($scope.images[i + 2]){
+                b.push($scope.images[i + 2]);
+            }
+            a.push(b);
+        }
+        $scope.groupedSlides = a;
+    }
+
+    createArray();
 
 }]);
 

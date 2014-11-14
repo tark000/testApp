@@ -1,12 +1,15 @@
 <div class="slider-block">
     <carousel interval="myInterval">
-        <slide ng-repeat="image in images" active="image.active">
-            <img ng-src="{{image.data}}" style="margin:auto;">
-            <div class="carousel-caption">
-                <rating ng-model="image.rate" max="5" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
-                <h4>Slide {{$index}}</h4>
-                <p>impressionCount = {{image.impressionCount}}</p>
+        <slide ng-repeat="slideCollection in groupedSlides" active="slideCollection.active">
+            <div class="slide-item" ng-repeat="image in slideCollection">
+                <img ng-src="{{image.data}}" style="margin:auto;">
+                <div class="carousel-caption">
+                    <rating ng-model="image.rate" max="5" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+                    <h4>Slide {{$index}}</h4>
+                    <p>impressionCount = {{image.impressionCount}}</p>
+                </div>
             </div>
+
         </slide>
     </carousel>
 </div>
