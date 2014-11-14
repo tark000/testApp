@@ -1,6 +1,7 @@
 
 
-angular.module('testApp').controller('SliderController', ['$scope','$upload','$timeout', function ($scope,$upload,$timeout) {
+angular.module('testApp').controller('SliderController', ['$scope','$upload','$timeout',
+    function ($scope,$upload,$timeout) {
 
 
     //slider
@@ -31,11 +32,12 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
     //add file to slides list
     $scope.selectedFiles = [];
     var imgCount;
-    var oldSize;
+
     $scope.onFileSelect = function($files) {
+
         var newImages = [];
         imgCount = 0;
-        oldSize = $scope.images.length;
+
         var nameArray = [];
         angular.forEach($files, function(v) {
 
@@ -55,17 +57,12 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
                 var loadFile = function(fileReader, index) {
                     fileReader.onload = function(e) {
 
-                        $scope.images.push({id : $scope.images[$scope.images.length-1].id + 1, data:e.target.result, file : {name: nameArray[imgCount]}, impressionCount:0, rate: 0});
-                        newImages.push({id : $scope.images[$scope.images.length-1].id + 1, data:e.target.result, file : {name: nameArray[imgCount]}, impressionCount:0, rate: 0});
-                        imgCount ++;
-                        console.log("i = ",i)
-                        if (i == imgCount){
 
-                            createArray(oldSize);
-                        }
+
                         $timeout(function() {
-
-
+                            $scope.images.push({id : $scope.images[$scope.images.length-1].id + 1, data:e.target.result, file : {name: nameArray[imgCount]}, impressionCount:0, rate: 0});
+                            imgCount ++;
+                            $scope.selectedFiles = [];
                         });
                     }
                 }(fileReader, i);
@@ -78,121 +75,80 @@ angular.module('testApp').controller('SliderController', ['$scope','$upload','$t
 
 
 
-    //change impression count
-
-    var lastId;
-    $scope.$watch(function () {
-
-        for (var i = 0; i < $scope.groupedSlides.length; i++) {
-
-            if ($scope.groupedSlides[i].active && lastId != i) {
-
-                angular.forEach($scope.groupedSlides[i], function(image) {
-
-                    image.impressionCount ++;
-
-                });
-
-                lastId = i;
-            }
-        }
-
-    }, function (currentSlide, previousSlide) {
-        if (currentSlide !== previousSlide) {
-            console.log('currentSlide:', currentSlide);
-        }
-    });
 
 
 
 
+    $scope.currentSlide = 0;
+    increaseImpression($scope.currentSlide*3);
+    increaseImpression($scope.currentSlide*3 + 1);
+    increaseImpression($scope.currentSlide*3 + 2);
 
-
-
-
-    // create multiple images in one slider
-    $scope.groupedSlides = [];
-    var lastSlidePosition;
-    function createArray (size){
-        console.log(size);
-        var i, a,col = [], b=[];
-
-
-
-        if (size){
-            if (lastSlidePosition == 1){
-                $scope.groupedSlides[$scope.groupedSlides.length -1].push($scope.images[size],$scope.images[size + 1]);
-                col = size + 2
-                for (i = 0; i < $scope.images.length - size; i += 3) {
-                    b = [];
-
-                    b.push($scope.images[col + i]);
-                    lastSlidePosition = 1;
-                    if ($scope.images[col +  i + 1]){
-                        b.push($scope.images[col +  i + 1]);
-                        lastSlidePosition = 2;
-                    }
-                    if ($scope.images[col +  i + 2]){
-                        b.push($scope.images[col +  i + 2]);
-                        lastSlidePosition = 3;
-                    }
-
-                    $scope.groupedSlides.push(b);
-                }
-
-            }
-            if (lastSlidePosition == 2){
-                $scope.groupedSlides[$scope.groupedSlides.length -1].push($scope.images[size]);
-                col = size + 1
-                for (i = 0; i < $scope.images.length - size; i += 3) {
-                    b = [];
-
-                    b.push($scope.images[col + i]);
-                    lastSlidePosition = 1;
-                    if ($scope.images[col +  i + 1]){
-                        b.push($scope.images[col +  i + 1]);
-                        lastSlidePosition = 2;
-                    }
-                    if ($scope.images[col +  i + 2]){
-                        b.push($scope.images[col +  i + 2]);
-                        lastSlidePosition = 3;
-                    }
-
-                    $scope.groupedSlides.push(b);
-                }
-
-            }
-
-
-
-        } else{
-            for (i = 0; i < $scope.images.length; i += 3) {
-                b = [];
-
-                b.push($scope.images[i]);
-                lastSlidePosition = 1;
-                if ($scope.images[i + 1]){
-                    b.push($scope.images[i + 1]);
-                    lastSlidePosition = 2;
-                }
-                if ($scope.images[i + 2]){
-                    b.push($scope.images[i + 2]);
-                    lastSlidePosition = 3;
-                }
-
-                $scope.groupedSlides.push(b);
-            }
-        }
-
-
-
-
-
-
+    $scope.next = function(){
+        nextFun();
 
     }
 
-    createArray();
+    var nextFun = function(){
+        var sliderSize = Math.ceil($scope.images.length/3);
+        if ($scope.currentSlide == sliderSize - 1) {
+            $scope.currentSlide = 0;
+        } else{
+            $scope.currentSlide ++;
+        }
+        increaseImpression($scope.currentSlide*3);
+        increaseImpression($scope.currentSlide*3 + 1);
+        increaseImpression($scope.currentSlide*3 + 2);
+        open = false;
+
+    }
+
+    $scope.back = function(){
+        var sliderSize = Math.ceil($scope.images.length/3);
+        if ($scope.currentSlide == 0) {
+            $scope.currentSlide = sliderSize - 1;
+        } else{
+            $scope.currentSlide --;
+        }
+
+        increaseImpression($scope.currentSlide*3);
+        increaseImpression($scope.currentSlide*3 + 1);
+        increaseImpression($scope.currentSlide*3 + 2);
+        open = false;
+    }
+
+
+
+
+    function increaseImpression(id){
+        if ($scope.images[id]){
+            $scope.images[id].impressionCount ++;
+        }
+    }
+    play();
+//    $interval(nextFun,3000);
+
+    var open = true;
+    function play (){
+        if (open){
+            $timeout(function() {
+                nextFun();
+                play();
+            }, 2000);
+        } else {
+            closeOpen ()
+        }
+
+    }
+
+        function closeOpen (){
+            open = false;
+            $timeout(function() {
+                open = true;
+                play();
+
+            }, 2000);
+        }
 
 }]);
 

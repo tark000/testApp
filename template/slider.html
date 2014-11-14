@@ -1,17 +1,38 @@
 <div class="slider-block">
-    <carousel interval="myInterval">
-        <slide ng-repeat="slideCollection in groupedSlides" active="slideCollection.active">
-            <div class="slide-item" ng-repeat="image in slideCollection">
-                <img ng-src="{{image.data}}" style="margin:auto;">
-                <div class="carousel-caption">
-                    <rating ng-model="image.rate" max="5" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
-                    <h4>Slide {{$index}}</h4>
-                    <p>impressionCount = {{image.impressionCount}}</p>
-                </div>
-            </div>
+    <div class="left" ng-click="back()">Back</div>
+    <div class="right" ng-click="next()">Next</div>
 
-        </slide>
-    </carousel>
+    <div class="slide-item">
+        <img ng-src="{{images[currentSlide*3].data}}" >
+        <div class="carousel-caption">
+            <rating ng-model="images[currentSlide*3].rate" max="5" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+            <h4>Slide {{currentSlide*3}}</h4>
+            <p>impressionCount = {{images[currentSlide*3].impressionCount}}</p>
+        </div>
+    </div>
+    <div class="slide-item" ng-show="images[currentSlide*3 + 1]">
+        <img ng-src="{{images[currentSlide*3 + 1].data}}" >
+        <div class="carousel-caption">
+            <rating ng-model="images[currentSlide*3 + 1].rate" max="5" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+            <h4>Slide {{currentSlide*3}}</h4>
+            <p>impressionCount = {{images[currentSlide*3 + 1].impressionCount}}</p>
+        </div>
+    </div>
+    <div class="slide-item" ng-show="images[currentSlide*3 + 2]">
+        <img ng-src="{{images[currentSlide*3 + 2].data}}" >
+        <div class="carousel-caption">
+            <rating ng-model="images[currentSlide*3 + 2].rate" max="5" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+            <h4>Slide {{currentSlide*3}}</h4>
+            <p>impressionCount = {{images[currentSlide*3 + 2].impressionCount}}</p>
+        </div>
+    </div>
+
+
+
+
+
+
+
 </div>
 
 
